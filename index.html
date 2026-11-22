@@ -51,7 +51,47 @@ input:focus{border-color:var(--g);box-shadow:0 0 0 3px #ff4d5e22}
 .x{background:none;border:0;color:var(--mut);cursor:pointer;font-size:18px;padding:0 4px}.x:hover{color:var(--r)}
 .toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(30px);background:var(--soft);border:1px solid var(--g);color:var(--g);padding:10px 18px;border-radius:12px;opacity:0;transition:.3s;pointer-events:none;font-size:14px}
 .toast.on{opacity:1;transform:translateX(-50%)}
+.scr{display:none}.scr.on{display:block;animation:in .35s ease}
+.menu{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+.menu button{display:flex;align-items:center;gap:14px;text-align:left;width:100%;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:12px;color:var(--tx);font:600 17px Inter,sans-serif;cursor:pointer;transition:.25s}
+.menu button:hover,.menu button:active{border-color:var(--g);background:var(--soft);transform:translateY(-2px)}
+.menu small{display:block;color:var(--mut);font:400 13px Inter,sans-serif;margin-top:3px}
+.menu .ic{width:44px;height:44px;border-radius:12px;background:var(--soft);border:1px solid var(--g);color:var(--g);display:flex;align-items:center;justify-content:center;flex:none}
+.menu .ic svg{width:22px;height:22px}
+.back{background:none;border:0;color:var(--mut);font:600 14px Inter,sans-serif;cursor:pointer;padding:4px 0 12px;transition:.2s}.back:hover{color:var(--g)}
+.lk{display:flex;justify-content:space-between;align-items:center}
+.lk a{color:var(--g);font-weight:600;font-size:17px;text-decoration:none;border-bottom:1px solid #ff4d5e55;transition:.2s}.lk a:hover{border-color:var(--g)}
+.lk span{color:var(--mut);font-size:12px}
+.rt{display:flex;align-items:center;gap:8px}.rt .nm{flex:1;min-width:0}.rt .am{width:76px;text-align:right}.rt b{color:var(--mut);font-weight:500;font-size:14px}
+.rt input{padding:10px}
+.bar{height:8px;background:#0b0b0c;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c81e3a,#ff4d5e);transition:width .45s ease}
+.rt input:not(.am){flex:1;min-width:0}.rt .lb{color:var(--mut);font-size:12px}textarea{flex:1;width:100%;padding:10px;background:#0b0b0c;border:1px solid var(--line);border-radius:10px;color:var(--tx);font:500 15px Inter,sans-serif;outline:0;resize:none;transition:.2s}textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px #ff4d5e22}.rq textarea[readonly]{background:transparent;border-color:transparent;cursor:copy;caret-color:transparent}.rq textarea[readonly]:active{background:var(--soft)}.rq.lock{border-color:#4a1a21}
+.rq.full{border-color:var(--g)}.rq{margin-bottom:10px;transition:.3s}
 </style></head><body><div class="app">
+<div id="home" class="scr on">
+<h1>DESH</h1><div class="sub">Выберите раздел</div>
+<div class="menu">
+<button data-go="calcapp"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 2l9 10-9 10-9-10z"/></svg></span><span>Калькулятор<small>Расчёт прибыли и история сделок</small></span></button>
+<button data-go="svc"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg></span><span>Сервисы<small>Быстрые ссылки на нужные сайты</small></span></button>
+<button data-go="req"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v8M10 10v8M14 10v8M19 10v8M3 21h18"/></svg></span><span>Реквизиты<small>Дневные лимиты по банкам до 100</small></span></button>
+</div></div>
+<div id="svc" class="scr"><button class="back" data-go="home">← Меню</button>
+<h1>Сервисы</h1><div class="sub">Нажмите на название, чтобы перейти на сайт</div>
+<div class="card" style="display:flex;flex-direction:column;gap:18px">
+<div class="lk"><a data-ext target="_blank" rel="noopener" href="https://playerok.com/wallet/add">Playerok</a><span>playerok.com</span></div>
+<div class="lk"><a data-ext target="_blank" rel="noopener" href="https://lzt.market/balance/deposit">Lolzsteam</a><span>lzt.market</span></div>
+<div class="lk"><a data-ext target="_blank" rel="noopener" href="https://www.ozon.ru/product/dekorativnaya-nakleyka-labubu-tigr-labubu-v-kostyume-tigrenka-3229155149/?at=1t6r1PMlyxg2kND0RBsTU-4pLZCf6GqC&amp;from_sku=3229119943&amp;oos_search=false&amp;sh=gNLMQzVnAg">Ozon (1)</a><span>ozon.ru</span></div>
+<div class="lk"><a data-ext target="_blank" rel="noopener" href="https://www.ozon.ru/product/dekorativnaya-nakleyka-labubu-tigr-labubu-v-kostyume-tigrenka-3229155149/?at=1t6r1PMlyxg2kND0RBsTU-4pLZCf6GqC&amp;from_sku=3229119943&amp;oos_search=false&amp;sh=gNLMQzVnAg">Ozon (2)</a><span>ozon.ru</span></div>
+<div class="lk"><a data-ext target="_blank" rel="noopener" href="https://www.wildberries.ru/catalog/282179288/detail.aspx">Wildberries</a><span>wildberries.ru</span></div>
+<div class="lk"><a data-ext target="_blank" rel="noopener" href="https://bulldrop.mobi/ru">Buldrop</a><span>bulldrop.mobi</span></div>
+<div class="lk"><a data-ext target="_blank" rel="noopener" href="https://tooba.com/ru?ysclid=mws90ozl6x952926908">Tooba</a><span>tooba.com</span></div>
+</div></div>
+<div id="req" class="scr"><button class="back" data-go="home">← Меню</button>
+<h1>Реквизиты</h1><div class="sub">Впишите банк, номер, ФИО, внесённую сумму и число сделок. После «Сохранить» нажмите на данные, чтобы скопировать. Максимум 100. Суммы сбрасываются каждый день</div>
+<div class="card st"><div class="l">Всего за сегодня</div><div class="v g" id="rtot">0</div></div>
+<div id="rows"></div></div>
+<div id="calcapp" class="scr"><button class="back" data-go="home">← Меню</button>
 <nav>
 <button data-t="ov" class="on"><svg class="i" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Обзор</button>
 <button data-t="calc"><svg class="i" viewBox="0 0 24 24"><path d="M12 2l9 10-9 10-9-10z"/></svg>Калькулятор</button>
@@ -92,7 +132,7 @@ input:focus{border-color:var(--g);box-shadow:0 0 0 3px #ff4d5e22}
 <div class="card st" style="margin:0"><div class="l">Количество сделок</div><div class="v" id="hc">0</div></div></div>
 <div id="list"></div>
 </section>
-</div><div class="toast" id="toast"></div>
+</div></div><div class="toast" id="toast"></div>
 <script>
 const $=id=>document.getElementById(id),KEY='desh_deals';
 let deals=[],days=7,cur=null;
@@ -173,4 +213,32 @@ function render(){
  document.querySelectorAll('.x').forEach(b=>b.onclick=()=>{deals=deals.filter(d=>d.id!=b.dataset.id);persist();render()});
 }
 render();
+</script><script>
+(function(){
+const RK='desh_req',N=12,MAX=100,SCR=['home','svc','req','calcapp'];
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+let rq=null;try{rq=JSON.parse(localStorage.getItem(RK))}catch(e){}
+if(!rq||!Array.isArray(rq.rows)||rq.rows.length!==N)rq={d:today(),rows:Array.from({length:N},()=>({n:'',a:0}))};
+rq.rows=rq.rows.map(r=>({a:0,c:0,l:false,...r,t:r.t!==undefined?r.t:[r.n,r.p,r.f].filter(Boolean).join(', ')}));
+const sv=()=>{try{localStorage.setItem(RK,JSON.stringify(rq))}catch(e){}};
+function paint(i){const el=$('rows').children[i],a=rq.rows[i].a;el.querySelector('.bar i').style.width=a/MAX*100+'%';el.classList.toggle('full',a>=MAX);
+ $('rtot').textContent=rq.rows.reduce((s,r)=>s+r.a,0)+' / '+N*MAX}
+function draw(){$('rows').innerHTML=rq.rows.map((r,i)=>{const d=r.l?' readonly':'';return `<div class="card rq${r.l?' lock':''}"><div class="rt"><textarea data-k="t" data-i="${i}" rows="2" maxlength="150" placeholder="Банк, номер телефона, ФИО"${d}>${esc(r.t)}</textarea></div>
+<div class="rt" style="margin-top:8px"><span class="lb">Внесено</span><input class="am" data-k="a" data-i="${i}" type="number" inputmode="numeric" min="0" max="${MAX}" placeholder="0" value="${r.a||''}"><b>/${MAX}</b><span class="lb" style="margin-left:auto">Сделок</span><input class="am" data-k="c" data-i="${i}" type="number" inputmode="numeric" min="0" placeholder="0" value="${r.c||''}"></div>
+<div class="bar"><i></i></div><button class="btn${r.l?'':' add'}" data-act="${i}" style="margin-top:12px;width:100%">${r.l?'Редактировать':'Сохранить'}</button></div>`}).join('');rq.rows.forEach((_,i)=>paint(i))}
+function daily(){if(rq.d!==today()){rq.d=today();rq.rows.forEach(r=>r.a=0);sv();draw()}}
+$('rows').addEventListener('input',e=>{const t=e.target,i=+t.dataset.i,k=t.dataset.k;if(isNaN(i)||!k)return;
+ if(k==='a'){let v=parseFloat(t.value);if(isNaN(v)||v<0)v=0;if(v>MAX){v=MAX;t.value=MAX}rq.rows[i].a=v;paint(i)}
+ else if(k==='c')rq.rows[i].c=Math.max(0,parseInt(t.value)||0);
+ else rq.rows[i][k]=t.value;sv()});
+function copyTxt(t){if(!t)return;const ok=()=>toast('Скопировано');
+ const fb=()=>{const x=document.createElement('textarea');x.value=t;x.style.cssText='position:fixed;opacity:0';document.body.appendChild(x);x.select();try{document.execCommand('copy');ok()}catch(e){}x.remove()};
+ try{navigator.clipboard.writeText(t).then(ok,fb)}catch(e){fb()}}
+$('rows').addEventListener('click',e=>{const ta=e.target.closest('textarea[data-k="t"]');if(ta&&rq.rows[+ta.dataset.i].l){copyTxt(rq.rows[+ta.dataset.i].t);return}
+const b=e.target.closest('[data-act]');if(!b)return;const r=rq.rows[+b.dataset.act];r.l=!r.l;sv();draw()});
+rq.rows.forEach(r=>{if(r.a>MAX)r.a=MAX});draw();daily();setInterval(daily,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)daily()});
+function go(id){SCR.forEach(x=>$(x).classList.toggle('on',x===id));if(id==='calcapp')render();scrollTo(0,0)}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+document.addEventListener('click',e=>{const a=e.target.closest('a[data-ext]');const w=window.Telegram&&Telegram.WebApp;if(a&&w&&w.openLink){e.preventDefault();w.openLink(a.href)}});
+})();
 </script></body></html>
