@@ -43,6 +43,8 @@ input:focus{border-color:var(--g);box-shadow:0 0 0 3px #ff4d5e22}
 .pop button:hover,.pop button.sel{background:var(--soft);color:var(--g)}
 .flt{display:flex;gap:8px;margin-bottom:12px}
 .flt button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--mut);font:600 13px Inter,sans-serif;cursor:pointer;transition:.25s}
+.pn{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;color:var(--mut);font-size:13px}.pn button{width:40px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--g);font:700 18px Inter,sans-serif;cursor:pointer;transition:.2s}.pn button:disabled{opacity:.3;cursor:default}.pn button:not(:disabled):active{transform:scale(.94)}
+.mb{width:100%;text-align:left;padding:12px 14px;border:1px solid var(--g);border-radius:10px;background:var(--soft);color:var(--g);font:700 15px Inter,sans-serif;cursor:pointer;transition:.2s}#mpop{left:0;right:0}
 .flt button.on{border-color:var(--g);color:var(--g);background:var(--soft)}
 .deal .t{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mut)}
 .deal .t b{color:var(--tx);font-size:15px}
@@ -126,16 +128,17 @@ input:focus{border-color:var(--g);box-shadow:0 0 0 3px #ff4d5e22}
 </section>
 
 <section id="hist">
-<h1>История операций</h1><div class="sub">Все сохранённые сделки</div>
-<div class="flt"><button data-d="7" class="on">За 7 дней</button><button data-d="30">За месяц</button></div>
-<div class="grid"><div class="card st" style="margin:0"><div class="l">Общая прибыль за период</div><div class="v" id="hp">0 ₽</div></div>
+<h1>История операций</h1><div class="sub">Сделки попадают в месяц, когда они проведены</div>
+<div class="fw" style="margin-bottom:12px"><button type="button" class="mb" id="mb">За всё время ▾</button><div class="pop" id="mpop"></div></div>
+<div class="grid"><div class="card st" style="margin:0"><div class="l" id="hl">Общая прибыль</div><div class="v" id="hp">0 ₽</div></div>
 <div class="card st" style="margin:0"><div class="l">Количество сделок</div><div class="v" id="hc">0</div></div></div>
+<div class="card"><h3>Итоги по месяцам</h3><div id="mlist"></div></div>
 <div id="list"></div>
 </section>
 </div></div><div class="toast" id="toast"></div>
 <script>
 const $=id=>document.getElementById(id),KEY='desh_deals';
-let deals=[],days=7,cur=null;
+let deals=[],mlen=1,po=0,cur=null;
 const F=[['amt','Сумма покупки',['₽','$'],'₽','100000'],['rb','Курс покупки',0,0,'92.5'],['rs','Курс продажи',0,0,'94.2'],['cb','Комиссия покупки',['%','₽','$'],'%','0'],['cs','Комиссия продажи',['%','₽','$'],'%','0'],['fd','Комиссия',['₽','$'],'$','0'],['ex','Другие расходы',['₽','$'],'₽','0']];
 const NM={'₽':'Рубли','$':'Доллары','%':'Проценты'},cu={};let dr={};
 try{dr=JSON.parse(localStorage.getItem('desh_draft')||'{}')}catch(e){}
@@ -176,10 +179,15 @@ function resetCalc(){['amt','rb','rs','cb','cs','fd','ex','bank'].forEach(i=>$(i
 $('add').onclick=()=>{
  if(!cur)return;
  const bank=$('bank').value.trim()||'Без банка',time=$('tm').value||localNow();
+ const t0=new Date(time),n0=new Date();if(t0.getFullYear()!==n0.getFullYear()||t0.getMonth()!==n0.getMonth()){toast('Сделку можно добавить только в текущий месяц');return}
  deals.push({id:Date.now(),...cur,bank,time});persist();resetCalc();toast('Сделка добавлена в историю');render()};
 $('cancel').onclick=$('del').onclick=()=>{resetCalc();toast('Текущий расчёт удалён')};
-document.querySelectorAll('.flt button').forEach(b=>b.onclick=()=>{days=+b.dataset.d;
- document.querySelectorAll('.flt button').forEach(x=>x.classList.toggle('on',x===b));render()});
+const MN=[[2026,11,'Декабрь'],[2027,0,'Январь'],[2027,1,'Февраль'],[2027,2,'Март'],[2027,3,'Апрель'],[2027,4,'Май'],[2027,5,'Июнь'],[2027,6,'Июль']];let hs='all';
+$('mpop').innerHTML='<button data-v="all" class="sel">За всё время</button>'+MN.map((m,k)=>`<button data-v="${k}">${m[2]} ${m[0]}</button>`).join('');
+function pick(v){hs=v;$('mpop').classList.remove('on');render()}
+$('mb').onclick=e=>{e.stopPropagation();$('mpop').classList.toggle('on')};
+$('mpop').onclick=e=>{const b=e.target.closest('button');if(b){e.stopPropagation();pick(b.dataset.v)}};
+$('mlist').onclick=e=>{const r=e.target.closest('.mrow');if(r)pick(r.dataset.v)};
 const fdt=s=>new Date(s).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
 function card(d,rm){return `<div class="card deal"><div class="t"><b>${esc(d.bank)} · ${fdt(d.time)}</b>${rm?`<button class="x" data-id="${d.id}" title="Удалить сделку">×</button>`:''}</div>
 <div class="m"><span>${fmt(d.amount)}</span><span class="${sgn(d.profit)}">${d.profit>=0?'+':''}${fmt(d.profit)}</span></div>
@@ -206,7 +214,11 @@ function render(){
   ${ys.map((y,i)=>i?`<circle cx="${X(i)}" cy="${Y(y)}" r="3" fill="${col}"/>`:'').join('')}</svg>`;
  }else{$('ch').style.display='none';$('chart').innerHTML='<span class="empty">Пока нет данных для графика</span>'}
  // history
- const lim=Date.now()-days*864e5,f=sorted.filter(d=>new Date(d.time).getTime()>=lim);
+ const inM=(d,k)=>{const t=new Date(d.time);return t.getFullYear()===MN[k][0]&&t.getMonth()===MN[k][1]};
+ const f=hs==='all'?sorted:sorted.filter(d=>inM(d,+hs)),nm=hs==='all'?'за всё время':MN[+hs][2]+' '+MN[+hs][0];
+ $('mb').textContent=(hs==='all'?'За всё время':nm)+' ▾';$('hl').textContent='Общая прибыль: '+nm;
+ $('mpop').querySelectorAll('button').forEach(b=>b.classList.toggle('sel',b.dataset.v===String(hs)));
+ $('mlist').innerHTML=MN.map((m,k)=>{const x=sorted.filter(d=>inM(d,k)),q=x.reduce((a,d)=>a+d.profit,0);return `<div class="lk mrow" data-v="${k}" style="padding:9px 0;cursor:pointer"><a style="border:0;font-size:15px">${m[2]} ${m[0]}</a><span style="font-size:13px">${x.length} сд. · <b class="${q<0?'rd':'g'}">${fmt(q)}</b></span></div>`}).join('');
  const p=f.reduce((s,d)=>s+d.profit,0);
  $('hp').textContent=fmt(p);$('hp').className='v '+(p<0?'rd':'g');$('hc').textContent=f.length;
  $('list').innerHTML=f.length?f.map(d=>card(d,true)).join(''):'<div class="card empty">Нет сделок за выбранный период</div>';
