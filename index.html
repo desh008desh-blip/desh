@@ -182,7 +182,7 @@ $('add').onclick=()=>{
  const t0=new Date(time),n0=new Date();if(t0.getFullYear()!==n0.getFullYear()||t0.getMonth()!==n0.getMonth()){toast('Сделку можно добавить только в текущий месяц');return}
  deals.push({id:Date.now(),...cur,bank,time});persist();resetCalc();toast('Сделка добавлена в историю');render()};
 $('cancel').onclick=$('del').onclick=()=>{resetCalc();toast('Текущий расчёт удалён')};
-const MN=[[2026,11,'Декабрь'],[2027,0,'Январь'],[2027,1,'Февраль'],[2027,2,'Март'],[2027,3,'Апрель'],[2027,4,'Май'],[2027,5,'Июнь'],[2027,6,'Июль']];let hs='all';
+const MN=[[2026,10,'Ноябрь'],[2026,11,'Декабрь'],[2027,0,'Январь'],[2027,1,'Февраль'],[2027,2,'Март'],[2027,3,'Апрель'],[2027,4,'Май'],[2027,5,'Июнь'],[2027,6,'Июль']];let hs='all';
 $('mpop').innerHTML='<button data-v="all" class="sel">За всё время</button>'+MN.map((m,k)=>`<button data-v="${k}">${m[2]} ${m[0]}</button>`).join('');
 function pick(v){hs=v;$('mpop').classList.remove('on');render()}
 $('mb').onclick=e=>{e.stopPropagation();$('mpop').classList.toggle('on')};
