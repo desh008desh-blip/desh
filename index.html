@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DESH — P2P</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0b0c;--card:#141416;--line:#26262a;--tx:#ececec;--mut:#85858d;--g:#ff4d5e;--b:#ff8a94;--r:#8f8f98;--soft:#2a1216;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,Roboto,system-ui,sans-serif}
+.app{max-width:520px;margin:0 auto;padding:14px 16px 40px}
+nav{display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px;margin-bottom:20px}
+nav button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 4px;border:1px solid transparent;border-radius:10px;background:none;color:var(--mut);font:600 13px Inter,sans-serif;cursor:pointer;transition:.25s}
+nav button.on{background:var(--soft);border-color:var(--g);color:var(--g)}
+svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+section{display:none;animation:in .35s ease}section.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h1{margin:0;font-size:24px}.sub{color:var(--mut);font-size:14px;margin:4px 0 18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.st .l{color:var(--mut);font-size:12px}.st .v{font-size:22px;font-weight:700;margin-top:6px}
+.g{color:var(--g)}.bl{color:var(--b)}.rd{color:var(--r)}
+.card h3{margin:0 0 10px;font-size:15px}
+.empty{color:var(--mut);text-align:center;padding:26px 0;font-size:14px}
+.chart{min-height:150px;display:flex;align-items:center;justify-content:center}
+.chart svg{width:100%;height:auto;display:block}
+.ch{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}.ch .v{font-size:20px;font-weight:700}.ch .tr{font-size:12px;font-weight:600}
+.cta{width:100%;padding:15px;border:0;border-radius:12px;background:linear-gradient(90deg,#ff4d5e,#c81e3a);color:#fff;font:700 16px Inter,sans-serif;cursor:pointer;transition:.2s}
+.cta:active{transform:scale(.97)}.cta:hover{filter:brightness(1.08)}
+label{display:block;color:var(--mut);font-size:12px;margin:12px 0 5px}
+input{width:100%;padding:12px;background:#0b0b0c;border:1px solid var(--line);border-radius:10px;color:var(--tx);font:500 15px Inter,sans-serif;outline:0;transition:.2s}
+input:focus{border-color:var(--g);box-shadow:0 0 0 3px #ff4d5e22}
+.res{margin-top:16px;text-align:center}.res .big{font-size:30px;font-weight:700;margin:6px 0}
+.row{display:flex;gap:10px;margin-top:14px}
+.btn{flex:1;padding:13px;border-radius:12px;border:1px solid var(--line);background:#0b0b0c;color:var(--tx);font:600 14px Inter,sans-serif;cursor:pointer;transition:.2s}
+.btn:active{transform:scale(.96)}.btn.add{background:linear-gradient(90deg,#ff4d5e,#c81e3a);color:#fff;border:0}
+.btn.del{color:var(--g);border-color:#4a1a21}
+#save{display:none;animation:in .35s ease}
+.fw{position:relative;display:flex;gap:8px}.fw input{flex:1}
+.cb{min-width:64px;padding:0 12px;border:1px solid var(--g);border-radius:10px;background:var(--soft);color:var(--g);font:700 15px Inter,sans-serif;cursor:pointer;transition:.2s}
+.cb:active{transform:scale(.95)}
+.pop{position:absolute;right:0;top:calc(100% + 6px);z-index:5;background:var(--card);border:1px solid var(--g);border-radius:12px;padding:5px;min-width:150px;display:none;box-shadow:0 8px 24px #000a;animation:in .2s ease}
+.pop.on{display:block}.pop button{display:block;width:100%;text-align:left;padding:10px 12px;border:0;border-radius:8px;background:none;color:var(--tx);font:500 14px Inter,sans-serif;cursor:pointer}
+.pop button:hover,.pop button.sel{background:var(--soft);color:var(--g)}
+.flt{display:flex;gap:8px;margin-bottom:12px}
+.flt button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--mut);font:600 13px Inter,sans-serif;cursor:pointer;transition:.25s}
+.flt button.on{border-color:var(--g);color:var(--g);background:var(--soft)}
+.deal .t{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mut)}
+.deal .t b{color:var(--tx);font-size:15px}
+.deal .m{display:flex;justify-content:space-between;margin:8px 0 4px;font-size:17px;font-weight:700}
+.deal .r{display:flex;justify-content:space-between;font-size:12px;color:var(--mut)}
+.x{background:none;border:0;color:var(--mut);cursor:pointer;font-size:18px;padding:0 4px}.x:hover{color:var(--r)}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(30px);background:var(--soft);border:1px solid var(--g);color:var(--g);padding:10px 18px;border-radius:12px;opacity:0;transition:.3s;pointer-events:none;font-size:14px}
+.toast.on{opacity:1;transform:translateX(-50%)}
+</style></head><body><div class="app">
+<nav>
+<button data-t="ov" class="on"><svg class="i" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Обзор</button>
+<button data-t="calc"><svg class="i" viewBox="0 0 24 24"><path d="M12 2l9 10-9 10-9-10z"/></svg>Калькулятор</button>
+<button data-t="hist"><svg class="i" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>История</button>
+</nav>
+
+<section id="ov" class="on">
+<h1>Главная панель</h1><div class="sub">Центр управления P2P-операциями</div>
+<div class="grid">
+<div class="card st" style="margin:0"><div class="l">Общая прибыль</div><div class="v g" id="s1">0 ₽</div></div>
+<div class="card st" style="margin:0"><div class="l">Всего сделок</div><div class="v" id="s2">0</div></div>
+<div class="card st" style="margin:0"><div class="l">Средняя прибыль</div><div class="v bl" id="s3">0 ₽</div></div>
+<div class="card st" style="margin:0"><div class="l">Положительные сделки</div><div class="v g" id="s4">0%</div></div>
+</div>
+<div class="card"><h3>График прибыли</h3><div class="ch" id="ch" style="display:none"></div><div class="chart" id="chart"><span class="empty">Пока нет данных для графика</span></div></div>
+<div class="card"><h3>Последние сделки</h3><div id="last"><div class="empty">Сделок пока нет</div></div></div>
+<button class="cta" id="newdeal">+ Новая сделка</button>
+</section>
+
+<section id="calc">
+<h1>Калькулятор прибыли</h1><div class="sub">Моделирование результата операции</div>
+<div class="card">
+<div id="fields"></div>
+<div style="height:16px"></div><button class="cta" id="go">Рассчитать</button>
+<div id="save">
+<div class="res"><div class="sub" style="margin:0">Итоговая прибыль</div><div class="big" id="pr"></div><div class="sub" id="det" style="margin:0"></div></div>
+<label>Банк</label><input id="bank" list="banks" placeholder="Сбер, Тинькофф, Альфа…">
+<datalist id="banks"><option>Сбер</option><option>Тинькофф</option><option>Альфа</option><option>Газпромбанк</option><option>РСХБ</option><option>ВБ</option><option>Ак Барс</option></datalist>
+<label>Время</label><input id="tm" type="datetime-local">
+<div class="row"><button class="btn" id="cancel">Отменить</button><button class="btn del" id="del">Удалить</button><button class="btn add" id="add">Добавить</button></div>
+</div></div>
+</section>
+
+<section id="hist">
+<h1>История операций</h1><div class="sub">Все сохранённые сделки</div>
+<div class="flt"><button data-d="7" class="on">За 7 дней</button><button data-d="30">За месяц</button></div>
+<div class="grid"><div class="card st" style="margin:0"><div class="l">Общая прибыль за период</div><div class="v" id="hp">0 ₽</div></div>
+<div class="card st" style="margin:0"><div class="l">Количество сделок</div><div class="v" id="hc">0</div></div></div>
+<div id="list"></div>
+</section>
+</div><div class="toast" id="toast"></div>
+<script>
+const $=id=>document.getElementById(id),KEY='desh_deals';
+let deals=[],days=7,cur=null;
+const F=[['amt','Сумма покупки',['₽','$'],'₽','100000'],['rb','Курс покупки',0,0,'92.5'],['rs','Курс продажи',0,0,'94.2'],['cb','Комиссия покупки',['%','₽','$'],'%','0'],['cs','Комиссия продажи',['%','₽','$'],'%','0'],['fd','Комиссия',['₽','$'],'$','0'],['ex','Другие расходы',['₽','$'],'₽','0']];
+const NM={'₽':'Рубли','$':'Доллары','%':'Проценты'},cu={};let dr={};
+try{dr=JSON.parse(localStorage.getItem('desh_draft')||'{}')}catch(e){}
+$('fields').innerHTML=F.map(([id,l,u,d,p])=>{const v=(dr.v&&dr.v[id])||'';
+ if(!u)return `<label>${l}</label><input id="${id}" type="number" inputmode="decimal" step="any" placeholder="${p}" value="${v}">`;
+ cu[id]=(dr.cu&&u.includes(dr.cu[id])&&dr.cu[id])||d;
+ return `<label>${l}</label><div class="fw"><input id="${id}" type="number" inputmode="decimal" step="any" placeholder="${p}" value="${v}"><button type="button" class="cb" data-f="${id}">${cu[id]} ▾</button><div class="pop">${u.map(x=>`<button data-v="${x}"${x===cu[id]?' class="sel"':''}>${x} ${NM[x]}</button>`).join('')}</div></div>`}).join('');
+function saveDraft(){try{const v={};[...F.map(f=>f[0]),'bank'].forEach(i=>v[i]=$(i).value);localStorage.setItem('desh_draft',JSON.stringify({v,cu}))}catch(e){}}
+document.addEventListener('input',saveDraft);document.addEventListener('click',()=>setTimeout(saveDraft,0));
+document.querySelectorAll('.cb').forEach(b=>{const pop=b.nextElementSibling;
+ b.onclick=e=>{e.stopPropagation();document.querySelectorAll('.pop').forEach(p=>p!==pop&&p.classList.remove('on'));pop.classList.toggle('on')};
+ pop.querySelectorAll('button').forEach(o=>o.onclick=e=>{e.stopPropagation();cu[b.dataset.f]=o.dataset.v;b.textContent=o.dataset.v+' ▾';
+  pop.querySelectorAll('button').forEach(x=>x.classList.toggle('sel',x===o));pop.classList.remove('on')})});
+document.addEventListener('click',()=>document.querySelectorAll('.pop').forEach(p=>p.classList.remove('on')));
+try{deals=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){try{deals=JSON.parse(localStorage.getItem(KEY+'_bak')||'[]')}catch(e2){}}
+const persist=()=>{try{const j=JSON.stringify(deals);localStorage.setItem(KEY,j);localStorage.setItem(KEY+'_bak',j)}catch(e){}};
+window.addEventListener('pagehide',()=>{persist();saveDraft()});document.addEventListener('visibilitychange',()=>{if(document.hidden){persist();saveDraft()}});
+const fmt=n=>(n<0?'−':'')+Math.abs(n).toLocaleString('ru-RU',{maximumFractionDigits:2})+' ₽';
+const sgn=n=>n>=0?'g':'rd';
+try{const w=window.Telegram&&Telegram.WebApp;if(w){w.ready();w.expand();w.setHeaderColor&&w.setHeaderColor('#0b0b0c');w.setBackgroundColor&&w.setBackgroundColor('#0b0b0c')}}catch(e){}
+function tab(t){document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===t));
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));render()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+$('newdeal').onclick=()=>tab('calc');
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800)}
+const localNow=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)};
+const num=id=>parseFloat($(id).value)||0;
+$('go').onclick=()=>{
+ const a=num('amt'),rb=num('rb'),rs=num('rs'),cb=num('cb'),cs=num('cs'),ex=num('ex'),fd=num('fd');
+ if(a<=0||rb<=0||rs<=0){toast('Заполните сумму и курсы');return}
+ const R=(v,id)=>cu[id]==='$'?v*rs:v,aR=cu.amt==='$'?a*rb:a,bf=cu.cb==='%'?0:R(cb,'cb'),sf=cu.cs==='%'?0:R(cs,'cs'),
+  units=aR/rb*(cu.cb==='%'?1-cb/100:1),sale=units*rs*(cu.cs==='%'?1-cs/100:1),fee=R(fd,'fd')+bf+sf,exr=R(ex,'ex'),profit=sale-aR-exr-fee;
+ cur={amount:aR,amountIn:a,amountCur:cu.amt,rateBuy:rb,rateSell:rs,commBuy:cb,commBuyCur:cu.cb,commSell:cs,commSellCur:cu.cs,expenses:exr,feeRub:fee,feeIn:fd,feeCur:cu.fd,exIn:ex,exCur:cu.ex,profit:Math.round(profit*100)/100};
+ $('pr').textContent=fmt(profit);$('pr').className='big '+sgn(profit);
+ $('det').textContent='Вложено: '+fmt(aR)+' · Получено: '+fmt(sale)+(fee?' · комиссии '+fmt(fee):'')+(exr?' · расходы '+fmt(exr):'')+' · ROI '+(profit/aR*100).toFixed(2)+'%';
+ $('tm').value=localNow();$('save').style.display='block';$('save').scrollIntoView({behavior:'smooth',block:'nearest'})};
+function resetCalc(){['amt','rb','rs','cb','cs','fd','ex','bank'].forEach(i=>$(i).value='');$('save').style.display='none';cur=null;saveDraft()}
+$('add').onclick=()=>{
+ if(!cur)return;
+ const bank=$('bank').value.trim()||'Без банка',time=$('tm').value||localNow();
+ deals.push({id:Date.now(),...cur,bank,time});persist();resetCalc();toast('Сделка добавлена в историю');render()};
+$('cancel').onclick=$('del').onclick=()=>{resetCalc();toast('Текущий расчёт удалён')};
+document.querySelectorAll('.flt button').forEach(b=>b.onclick=()=>{days=+b.dataset.d;
+ document.querySelectorAll('.flt button').forEach(x=>x.classList.toggle('on',x===b));render()});
+const fdt=s=>new Date(s).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+function card(d,rm){return `<div class="card deal"><div class="t"><b>${esc(d.bank)} · ${fdt(d.time)}</b>${rm?`<button class="x" data-id="${d.id}" title="Удалить сделку">×</button>`:''}</div>
+<div class="m"><span>${fmt(d.amount)}</span><span class="${sgn(d.profit)}">${d.profit>=0?'+':''}${fmt(d.profit)}</span></div>
+<div class="r"><span>Покупка: ${d.rateBuy}</span><span>Продажа: ${d.rateSell}</span></div></div>`}
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function render(){
+ const sorted=[...deals].sort((a,b)=>new Date(b.time)-new Date(a.time));
+ const tot=deals.reduce((s,d)=>s+d.profit,0),n=deals.length;
+ $('s1').textContent=fmt(tot);$('s1').className='v '+(tot<0?'rd':'g');
+ $('s2').textContent=n;$('s3').textContent=fmt(n?tot/n:0);
+ $('s4').textContent=(n?Math.round(deals.filter(d=>d.profit>0).length/n*100):0)+'%';
+ $('last').innerHTML=n?sorted.slice(0,3).map(d=>card(d,false)).join(''):'<div class="empty">Сделок пока нет</div>';
+ // chart: cumulative profit
+ if(n){const asc=[...sorted].reverse();let c=0;const ys=[0,...asc.map(d=>c+=d.profit)];
+  const W=320,H=170,pl=8,pr=8,pt=14,pb=14,mn=Math.min(0,...ys),mx=Math.max(0,...ys),rg=(mx-mn)||1;
+  const X=i=>pl+i*(W-pl-pr)/(ys.length-1),Y=y=>pt+(mx-y)/rg*(H-pt-pb);
+  const pts=ys.map((y,i)=>X(i).toFixed(1)+','+Y(y).toFixed(1)),up=c>=0,col=up?'#ff4d5e':'#8f8f98';
+  const area=`${X(0)},${Y(0)} ${pts.join(' ')} ${X(ys.length-1)},${Y(0)}`;
+  $('ch').style.display='flex';
+  $('ch').innerHTML=`<span class="v ${up?'g':'rd'}">${fmt(c)}</span><span class="tr ${up?'g':'rd'}">${up?'▲ рост':'▼ убывание'}</span>`;
+  $('chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}"><defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+  <line x1="${pl}" x2="${W-pr}" y1="${Y(0)}" y2="${Y(0)}" stroke="#26262a" stroke-dasharray="4 4"/>
+  <polygon points="${area}" fill="url(#gr)"/><polyline points="${pts.join(' ')}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+  ${ys.map((y,i)=>i?`<circle cx="${X(i)}" cy="${Y(y)}" r="3" fill="${col}"/>`:'').join('')}</svg>`;
+ }else{$('ch').style.display='none';$('chart').innerHTML='<span class="empty">Пока нет данных для графика</span>'}
+ // history
+ const lim=Date.now()-days*864e5,f=sorted.filter(d=>new Date(d.time).getTime()>=lim);
+ const p=f.reduce((s,d)=>s+d.profit,0);
+ $('hp').textContent=fmt(p);$('hp').className='v '+(p<0?'rd':'g');$('hc').textContent=f.length;
+ $('list').innerHTML=f.length?f.map(d=>card(d,true)).join(''):'<div class="card empty">Нет сделок за выбранный период</div>';
+ document.querySelectorAll('.x').forEach(b=>b.onclick=()=>{deals=deals.filter(d=>d.id!=b.dataset.id);persist();render()});
+}
+render();
+</script></body></html>
